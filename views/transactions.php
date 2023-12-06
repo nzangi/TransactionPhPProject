@@ -31,6 +31,7 @@
     </tr>
     </thead>
     <tbody>
+
         <?php if (! empty($transactions)):?>
             <?php foreach ($transactions as $transaction):?>
                 <tr>
@@ -42,18 +43,19 @@
             <?php endforeach ?>
         <?php endif ?>
     </tbody>
+
     <tfoot>
     <tr>
         <th colspan="3">Total Income:</th>
-        <td><!-- YOUR CODE --></td>
+        <td><?= $totals['totalIncome'] ?? 0 ?></td>
     </tr>
     <tr>
         <th colspan="3">Total Expense:</th>
-        <td><!-- YOUR CODE --></td>
+        <td><?= $totals['totalExpense'] ?? 0 ?></td>
     </tr>
     <tr>
         <th colspan="3">Net Total:</th>
-        <td><!-- YOUR CODE --></td>
+        <td><?= $totals['netTotal'] ?? 0 ?></td>
     </tr>
     </tfoot>
 </table>

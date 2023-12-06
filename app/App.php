@@ -13,7 +13,7 @@
         }
         return $files;
     }
-    function getTransactions(string $fileName): array
+    function getTransactions(string $fileName,$transactionHandler = null): array
     {
         if(! file_exists($fileName)){
             trigger_error('File "' .$fileName . '" doesnot exist.',E_USER_ERROR);
@@ -22,15 +22,21 @@
         fgetcsv($file);
         $transactions = [];
 
-        while (($transaction = fgetcsv($file)) != false){
-            $transactions[] = extractTransactions($transaction);
+        while (($transaction = fgetcsv($file)) !== false){
+            if ($transactionHandler !== null && is_callable($transactionHandler)){
+                $transaction = $transactionHandler($transaction);
+
+            }
+            $transactions[] = $transaction;
+
         }
+
         return $transactions;
     }
 
     function extractTransactions(array $transactionRow): array
     {
-        [$date,$checkNumber,$description,$amount] = $transactionRow;
+        list($date,$checkNumber,$description,$amount) = $transactionRow;
         $amount = (float) str_replace(['$',','],'',$amount);
 
         return [
@@ -40,4 +46,18 @@
             'amount' => $amount,
         ];
     }
-?>
+    function calculateTotals (array $transactions ): array
+    {
+        $totals = ['netTotal' =>0,'totalIncome' =>0,'totalExpense'=>0];
+
+        foreach ($transactions as $transaction){
+            $totals['netTotal'] += $transaction['amount'];
+            if ($transaction['amount'] >=0){
+                $totals['totalIncome'] += $transaction['amount'];
+            }else{
+                $totals['totalExpense'] += $transaction['amount'];
+            }
+        }
+        return $totals;
+    }
+    ?>
