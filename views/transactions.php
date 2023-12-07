@@ -8,9 +8,15 @@
             border-collapse: collapse;
             text-align: center;
         }
+        thead h1{
+            display: block;
+            margin: 0 auto;
+            color: black;
+        }
         table tr th,table tr td{
             padding: 5px;
-            border: 1px #eee solid;
+            border: 2px #eee solid;
+            text-align: left;
         }
         tfoot tr th, tfoot tr td{
             font-size: 20px;
@@ -23,6 +29,9 @@
 <body>
 <table>
     <thead>
+    <h1>
+        Expenditure Table
+    </h1>
     <tr>
         <th>Date</th>
         <th>Check #</th>
@@ -32,34 +41,53 @@
     </thead>
     <tbody>
 
-        <?php if (! empty($transactions)):?>
-            <?php foreach ($transactions as $transaction):?>
-                <tr>
-                <td><?= $transaction['date'] ?></td>
-                <td><?= $transaction['checkNumber'] ?></td>
-                <td><?= $transaction['description'] ?></td>
-                <td><?= $transaction['amount'] ?></td>
-            </tr>
-            <?php endforeach ?>
-        <?php endif ?>
+    <?php if (! empty($transactions)):?>
+        <?php foreach ($transactions as $transaction):?>
+        <tr>
+            <td><?= formatDate($transaction['date']) ?></td>
+            <td><?= $transaction['checkNumber'] ?></td>
+            <td><?= $transaction['description'] ?></td>
+            <td>
+                <?php if($transaction['amount'] < 0): ?>
+                    <span style="color: red;">
+                        <?= formatDollarAmount($transaction['amount']) ?>
+                    </span>
+                <?php elseif($transaction['amount'] > 0): ?>
+                    <span style="color: blue;">
+                        <?= formatDollarAmount($transaction['amount']) ?>
+                    </span>
+                <?php else:?>
+                    <?= formatDollarAmount($transaction['amount']) ?>
+                <?php endif ?>
+            </td>
+        </tr>
+        <?php endforeach ?>
+    <?php endif ?>
     </tbody>
 
     <tfoot>
     <tr>
         <th colspan="3">Total Income:</th>
-        <td><?= $totals['totalIncome'] ?? 0 ?></td>
+        <td>
+            <span style="color: blue;font-weight: bold">
+            <?= formatDollarAmount($totals['totalIncome']) ?? 0 ?>
+        </td>
     </tr>
     <tr>
         <th colspan="3">Total Expense:</th>
-        <td><?= $totals['totalExpense'] ?? 0 ?></td>
+        <td>
+            <span style="color: red;font-weight: bold">
+            <?= formatDollarAmount($totals['totalExpense']) ?? 0 ?>
+        </td>
     </tr>
     <tr>
         <th colspan="3">Net Total:</th>
-        <td><?= $totals['netTotal'] ?? 0 ?></td>
+        <td>
+            <span style="color: black;font-weight: bold">
+            <?= formatDollarAmount($totals['netTotal']) ?? 0 ?>
+        </td>
     </tr>
     </tfoot>
 </table>
 </body>
 </html>
-
-
